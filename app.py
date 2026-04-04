@@ -1,6 +1,6 @@
 import os
 import logging
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 from imap_client import fetch_emails
@@ -17,13 +17,17 @@ def inbox():
     if request.method == "HEAD":
         return "", 200
 
+    refreshed = datetime.utcnow().astimezone(
+        timezone(timedelta(hours=5, minutes=30))
+    ).strftime("%Y-%m-%d %H:%M:%S IST")
+
     try:
         emails = fetch_emails()
         logger.info(f"Rendered {len(emails)} emails")
         return render_template(
             "inbox.html",
             emails=emails,
-            refreshed=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+            refreshed=refreshed
         )
     except Exception as e:
         logger.exception("Failed to load inbox")
@@ -31,7 +35,7 @@ def inbox():
             "inbox.html",
             emails=[],
             error="Could not fetch emails",
-            refreshed=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+            refreshed=refreshed
         ), 500
 
 
