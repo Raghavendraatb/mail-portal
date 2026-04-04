@@ -53,3 +53,14 @@ def fetch_emails(limit=20):
 
     mail.logout()
     return emails
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def fetch_emails(limit=20):
+    logger.info("Connecting to Gmail IMAP")
+    ...
+    logger.info(f"Found {len(email_ids)} unread emails")
+    ...
