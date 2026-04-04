@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mail Portal</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .mail { border: 1px solid #ddd; margin-bottom: 15px; padding: 10px; }
+        .subject { font-weight: bold; }
+        iframe { width: 100%; height: 200px; border: none; }
+    </style>
+</head>
+<body>
+
+<h2>📬 Inbox</h2>
+
+{% for mail in emails %}
+<div class="mail">
+    <div class="subject">{{ mail.subject }}</div>
+    <div>From: {{ mail.from }}</div>
+    <div>Date: {{ mail.date }}</div>
+    <hr>
+    <iframe srcdoc="{{ mail.body | safe }}"></iframe>
+</div>
+{% else %}
+<p>No new emails</p>
+{% endfor %}
+
+</body>
+</html>
