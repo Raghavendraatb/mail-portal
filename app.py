@@ -1,33 +1,44 @@
 import os
-from flask import Flask, render_template
+import logging
+from datetime import datetime
+from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 from imap_client import fetch_emails
-import logging
 
 logging.basicConfig(level=logging.INFO)
-
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 CORS(app)
 
-@app.route("/")
+
+@app.route("/", methods=["GET", "HEAD"])
 def inbox():
-    logger.info("Inbox endpoint hit")
+    if request.method == "HEAD":
+        return "", 200
 
-    emails = fetch_emails()
-    logger.info(f"Fetched {len(emails)} emails")
+    try:
+        emails = fetch_emails()
+        logger.info(f"Rendered {len(emails)} emails")
+        return render_template(
+            "inbox.html",
+            emails=emails,
+            refreshed=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+        )
+    except Exception as e:
+        logger.exception("Failed to load inbox")
+        return render_template(
+            "inbox.html",
+            emails=[],
+            error="Could not fetch emails",
+            refreshed=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+        ), 500
 
-    return render_template("inbox.html", emails=emails)
-
-# @app.route("/")
-# def inbox():
-#     emails = fetch_emails()
-#     return render_template("inbox.html", emails=emails)
 
 @app.route("/health")
 def health():
-    return {"status": "UP"}, 200
+    return jsonify(status="UP"), 200
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

@@ -3,27 +3,102 @@
 <head>
     <title>Mail Portal</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        .mail { border: 1px solid #ddd; margin-bottom: 15px; padding: 10px; }
-        .subject { font-weight: bold; }
-        iframe { width: 100%; height: 200px; border: none; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f1f3f4;
+        }
+
+        header {
+            background: #ffffff;
+            padding: 12px 16px;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 10px 20px;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            background: #ffeaea;
+            color: #cc0000;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #cc0000;
+        }
+
+        .mail {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .mail:hover {
+            background: #f5f5f5;
+        }
+
+        .subject {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .meta {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .body {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
+
 <body>
 
-<h2>📬 Inbox</h2>
+<header>📬 Mail Portal</header>
 
-{% for mail in emails %}
-<div class="mail">
-    <div class="subject">{{ mail.subject }}</div>
-    <div>From: {{ mail.from }}</div>
-    <div>Date: {{ mail.date }}</div>
-    <hr>
-    <iframe srcdoc="{{ mail.body | safe }}"></iframe>
+<div class="container">
+
+    <div class="status">
+        Last refreshed: {{ refreshed }}
+    </div>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if emails %}
+        {% for mail in emails %}
+        <details class="mail">
+            <summary>
+                <div class="subject">{{ mail.subject }}</div>
+                <div class="meta">
+                    From: {{ mail.from }} | {{ mail.date }}
+                </div>
+            </summary>
+
+            <div class="body">
+                {{ mail.body | safe }}
+            </div>
+        </details>
+        {% endfor %}
+    {% else %}
+        <p>No emails available.</p>
+    {% endif %}
+
 </div>
-{% else %}
-<p>No new emails</p>
-{% endfor %}
 
 </body>
 </html>
