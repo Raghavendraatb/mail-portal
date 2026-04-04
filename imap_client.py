@@ -46,6 +46,7 @@ def fetch_emails(limit=50):
 
         subject = decode(msg.get("subject"))
         sender = decode(msg.get("from"))
+        to_addr = decode(msg.get("to"))     
         date = msg.get("date")
 
         body = ""
@@ -57,10 +58,11 @@ def fetch_emails(limit=50):
         emails.append({
             "id": eid.decode(),
             "from": sender,
+            "to": to_addr,                
             "subject": subject or "(No Subject)",
             "date": date,
-            "body": body or "<i>No HTML body</i>"
-        })
+            "body": body or "<i>No content</i>"
+})
 
     mail.logout()
     return emails

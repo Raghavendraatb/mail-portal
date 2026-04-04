@@ -25,6 +25,9 @@
             font-size: 12px;
             color: #666;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .error {
@@ -62,6 +65,14 @@
             padding-top: 10px;
             border-top: 1px solid #eee;
         }
+
+        .refresh-btn {
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: #ffffff;
+        }
     </style>
 </head>
 
@@ -72,7 +83,12 @@
 <div class="container">
 
     <div class="status">
-        Last refreshed: {{ refreshed }}
+        <span>Last refreshed: {{ refreshed }}</span>
+
+        <!-- ✅ Refresh Button -->
+        <form method="get" action="/" style="margin:0;">
+            <button class="refresh-btn" type="submit">🔄 Refresh</button>
+        </form>
     </div>
 
     {% if error %}
@@ -85,7 +101,9 @@
             <summary>
                 <div class="subject">{{ mail.subject }}</div>
                 <div class="meta">
-                    From: {{ mail.from }} | {{ mail.date }}
+                    <div><strong>From:</strong> {{ mail.from }}</div>
+                    <div><strong>To:</strong> {{ mail.to }}</div>
+                    <div><strong>Date:</strong> {{ mail.date }}</div>
                 </div>
             </summary>
 
