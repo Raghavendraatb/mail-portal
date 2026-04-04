@@ -20,10 +20,10 @@ def inbox():
 
     return render_template("inbox.html", emails=emails)
 
-@app.route("/")
-def inbox():
-    emails = fetch_emails()
-    return render_template("inbox.html", emails=emails)
+# @app.route("/")
+# def inbox():
+#     emails = fetch_emails()
+#     return render_template("inbox.html", emails=emails)
 
 @app.route("/health")
 def health():
